@@ -6,11 +6,13 @@ Script to compare two directories and the files within them to determine inconsi
 Select two folders and let the magic take place. 
 
 By Erick Begishev '27
-Feb. 2025
-Version 1.0
+Sep. 2025
+Version 1.1
 
 Designed for UR Baja SAE Systems Integration
 '''
+
+OUTPUT_FILE = "comparison_results.txt"
 
 def get_file_names(directory): #get file names from directory
     file_names = set()
@@ -18,6 +20,10 @@ def get_file_names(directory): #get file names from directory
         for file in files:
             file_names.add(file)
     return file_names
+
+def write_output(text, file_handle):
+    print(text)
+    file_handle.write(text + '\n')
 
 def compare_folders(): #compare folders with file names
     root = Tk()
@@ -42,19 +48,22 @@ def compare_folders(): #compare folders with file names
     only_in_folder1 = files1 - files2
     only_in_folder2 = files2 - files1
     
-    #print results
-    print("\nResults:")
-    if only_in_folder1:
-        print(f"{folder1_name} has but {folder2_name} doesn't:")
-        for file in sorted(only_in_folder1):
-            print(file)
-    
-    if only_in_folder2:
-        print(f"{folder2_name} has but {folder1_name} doesn't:")
-        for file in sorted(only_in_folder2):
-            print(file)
-    
-    if not only_in_folder1 and not only_in_folder2:
-        print(f"Both {folder1_name} and {folder2_name} have the same file names")
+    with open(OUTPUT_FILE, 'w', encoding='utf-8') as output_file:
+        write_output("\nResults:", output_file)
+
+        if only_in_folder1:
+            write_output(f"{folder1_name} has but {folder2_name} doesn't:", output_file)
+            for file in sorted(only_in_folder1):
+                write_output(file, output_file)
+
+        if only_in_folder2:
+            write_output(f"{folder2_name} has but {folder1_name} doesn't:", output_file)
+            for file in sorted(only_in_folder2):
+                write_output(file, output_file)
+
+        if not only_in_folder1 and not only_in_folder2:
+            write_output(f"Both {folder1_name} and {folder2_name} have the same file names", output_file)
+
+    print(f"\nResults also written to: {OUTPUT_FILE}")
 
 compare_folders()

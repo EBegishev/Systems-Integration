@@ -1,0 +1,61 @@
+# Eye Rest Timer
+# Developed by E.Begishev Nov 2025
+# Version 1.0
+
+import tkinter as tk
+from tkinter import messagebox
+import threading
+import time
+import sys
+import os
+
+BREAK_INTERVAL_MINUTES = 30  # How often to show the break window
+
+def show_break_window():
+    #Display a popup window that cannot be closed without pressing 'Done'
+
+    # new window
+    win = tk.Tk()
+    win.title("Eye Break Reminder")
+    win.attributes("-topmost", True)
+    win.geometry("350x150")
+    win.resizable(False, False)
+
+    # disables the default close button
+    win.protocol("WM_DELETE_WINDOW", lambda: None)
+
+    label = tk.Label(win, text="Look away for a few moments.", font=("Arial", 14))
+    label.pack(pady=20)
+
+    btn = tk.Button(win, text="Done", font=("Arial", 12), command=win.destroy)
+    btn.pack(pady=10)
+    win.mainloop()
+
+def loop_breaks():
+    # background loop that triggers the break window every N minutes
+    interval_seconds = BREAK_INTERVAL_MINUTES * 60
+
+    while True:
+        time.sleep(interval_seconds)
+        show_break_window()
+
+
+def make_background_thread():
+    # Runs the break loop in a background thread
+    t = threading.Thread(target=loop_breaks)
+    t.daemon = True  # keeps program running even if window closes
+    t.start()
+
+if __name__ == "__main__":
+    print(f"Eye-break reminder running every {BREAK_INTERVAL_MINUTES} minutes.")
+    print("This window can be minimized. Do not close it.")
+
+    # start background thread
+    make_background_thread()
+
+    # keep the main program alive forever
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        sys.exit()

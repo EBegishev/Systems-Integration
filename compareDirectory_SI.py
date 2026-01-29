@@ -64,6 +64,5 @@ def compare_folders(): #compare folders with file names
         if not only_in_folder1 and not only_in_folder2:
             write_output(f"Both {folder1_name} and {folder2_name} have the same file names", output_file)
 
-    print(f"\nResults also written to: {OUTPUT_FILE}")
-
 compare_folders()
+
